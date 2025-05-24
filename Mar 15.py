@@ -2,7 +2,6 @@ from tkinter import *
 from tkinter import PhotoImage, Canvas
 import random
 
-# Пути к изображениям
 BG_MAIN_PATH = "C:/Users/userOK/OneDrive/Документы/Колледж/2 курс/УП/Для игры/backgr.png"
 BG_START_PATH = "C:/Users/userOK/OneDrive/Документы/Колледж/2 курс/УП/Для игры/фон.png"
 FONT = ("BOWLER", 30)
@@ -10,13 +9,11 @@ FONT_HOVER = ("BOWLER", 31, "bold")
 BUTTON_BG = "black"
 BUTTON_FG = "white"
 
-# Основное окно
 window = Tk()
 window.resizable(False, False)
 window.title("Игра Жизнь")
 window.state('zoomed')
 
-# Функция для центрирования окна
 def center_window(win, width, height):
     screen_width = win.winfo_screenwidth()
     screen_height = win.winfo_screenheight()
@@ -24,7 +21,6 @@ def center_window(win, width, height):
     y = (screen_height // 2) - (height // 2)
     win.geometry(f'{width}x{height}+{x}+{y}')
 
-# Функции для кнопок
 def on_enter(event):
     event.widget.config(font=FONT_HOVER)
 
@@ -39,21 +35,19 @@ def create_button(parent, text, command=None):
         button.bind("<Button-1>", lambda event: command())
     return button
 
-# Переключение между меню и игрой
 def show_menu():
-    game_frame.pack_forget()  # Скрываем игровое поле
-    menu_frame.pack(fill="both", expand=True)  # Показываем меню
-    game.stop()  # Останавливаем игру
+    game_frame.pack_forget() 
+    menu_frame.pack(fill="both", expand=True)  
+    game.stop() 
 
 def start_game():
-    menu_frame.pack_forget()  # Скрываем меню
-    game_frame.pack(fill="both", expand=True)  # Показываем игровое поле
-    game.start()  # Запускаем игру
+    menu_frame.pack_forget()  
+    game_frame.pack(fill="both", expand=True)  
+    game.start() 
 
 def exit_game():
     window.destroy()
 
-# Окно с шаблонами
 def pattern():
     pattern_window = Toplevel(window)
     pattern_window.resizable(False, False)
@@ -66,7 +60,6 @@ def pattern():
     close_button = create_button(pattern_window, "  Выход", pattern_window.destroy)
     canvas1.create_window(820, 430, anchor="nw", window=close_button)
 
-# Окно с обучением
 def open_tutorial():
     tutorial_window = Toplevel(window)
     tutorial_window.resizable(False, False)
@@ -98,7 +91,6 @@ def open_tutorial():
     label = Label(tutorial_window, text=tutorial_text, justify="left", padx=10, pady=10, font=('Comic Sans MS', 11), fg="white", bg="#4fc8f3")
     canvas1.create_window(500, 200, anchor="center", window=label)
 
-# Класс игры "Жизнь"
 class GameOfLife:
     def __init__(self, root, width=50, height=50, cell_size=10):
         self.root = root
@@ -112,8 +104,8 @@ class GameOfLife:
 
         self.running = False
         self.draw_grid()
-        self.create_buttons()  # Создаем кнопки после создания холста
-        self.canvas.bind("<Button-1>", self.toggle_cell)  # Обработчик клика мыши
+        self.create_buttons() 
+        self.canvas.bind("<Button-1>", self.toggle_cell)  
 
     def draw_grid(self):
         self.canvas.delete("all")
@@ -133,7 +125,6 @@ class GameOfLife:
                     )
 
     def create_buttons(self):
-        # Создаем кастомные кнопки и размещаем их на холсте
         self.start_button = create_button(self.root, "Старт", command=self.start)
         self.start_button.place(x=50, y=50)
 
@@ -192,14 +183,12 @@ class GameOfLife:
         return neighbors
 
     def toggle_cell(self, event):
-        # Определяем, по какой клетке кликнули
         x = event.x // self.cell_size
         y = event.y // self.cell_size
         if 0 <= x < self.width and 0 <= y < self.height:
-            self.grid[y][x] = 1 - self.grid[y][x]  # Переключаем состояние клетки
+            self.grid[y][x] = 1 - self.grid[y][x]
             self.draw_grid()
 
-# Меню
 menu_frame = Frame(window)
 menu_frame.pack(fill="both", expand=True)
 
@@ -221,7 +210,6 @@ canvas.create_window(650, 400, anchor="nw", window=button_pattern)
 canvas.create_window(12, 2, anchor="nw", window=button_music)
 canvas.create_window(1485, 2, anchor="nw", window=button_info)
 
-# Игровое поле
 game_frame = Frame(window)
 
 bg_start = PhotoImage(file=BG_START_PATH)
@@ -232,8 +220,6 @@ game_canvas.create_image(0, 0, image=bg_start, anchor="nw")
 button_menu = create_button(game_frame, "Меню", show_menu)
 game_canvas.create_window(12, 2, anchor="nw", window=button_menu)
 
-# Создаем игру
 game = GameOfLife(game_canvas)
 
-# Запуск основного цикла
 window.mainloop()
