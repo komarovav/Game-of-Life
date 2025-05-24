@@ -1,21 +1,18 @@
 from tkinter import *
 import random
 
-# Пути к изображениям
 BG_MAIN_PATH = "C:/Users/userOK/OneDrive/Документы/Колледж/2 курс/УП/Для игры/backgr.png"
 BG_START_PATH = "C:/Users/userOK/OneDrive/Документы/Колледж/2 курс/УП/Для игры/фон.png"
 FONT = ("BOWLER", 30)
 BUTTON_BG = "black"
 BUTTON_FG = "white"
 
-# Основное окно
 window = Tk()
 window.resizable(False, False)
 window.title("Игра Жизнь")
 window.state('zoomed')
 window.iconbitmap()
 
-# Функция для центрирования окна
 def center_window(win, width, height):
     screen_width = win.winfo_screenwidth()
     screen_height = win.winfo_screenheight()
@@ -23,17 +20,13 @@ def center_window(win, width, height):
     y = (screen_height // 2) - (height // 2)
     win.geometry(f'{width}x{height}+{x}+{y}')
 
-# Функции для кнопок
 def on_enter(event):
-    # Сохраняем исходный шрифт, если он ещё не сохранён
     if not hasattr(event.widget, "original_font"):
         event.widget.original_font = event.widget.cget("font")
 
-    # Разбираем строку шрифта
     current_font = event.widget.cget("font")
     font_family, font_size = parse_font(current_font)
 
-    # Увеличиваем размер шрифта
     new_font_size = int(font_size) + 1
     event.widget.config(font=(font_family, new_font_size))
 
@@ -45,7 +38,6 @@ def parse_font(font_string):
 
 
 def on_leave(event):
-    # Возвращаем исходный шрифт
     if hasattr(event.widget, "original_font"):
         event.widget.config(font=event.widget.original_font)
 
@@ -58,25 +50,22 @@ def create_button(parent, text, command=None, font=None):
         button.bind("<Button-1>", lambda event: command())
     return button
 
-# Переключение между меню и игрой
 def show_menu():
-    game_frame.pack_forget()  # Скрываем игровое поле
-    menu_frame.pack(fill="both", expand=True)  # Показываем меню
-    game.stop()  # Останавливаем игру
+    game_frame.pack_forget()
+    menu_frame.pack(fill="both", expand=True)  
+    game.stop()  
 
 def start_game():
-    menu_frame.pack_forget()  # Скрываем меню
-    game_frame.pack(fill="both", expand=True)  # Показываем игровое поле
-    game.start()  # Запускаем игру
+    menu_frame.pack_forget()
+    game_frame.pack(fill="both", expand=True) 
+    game.start() 
 
 def pattern():
-    # Создание нового окна
     pattern_window = Toplevel(window)
     pattern_window.resizable(False, False)
     pattern_window.title("Шаблоны")
     center_window(pattern_window, 1000, 500)
 
-    # Список фоновых изображений
     image_paths = [
         "C:/Users/userOK/OneDrive/Документы/Колледж/2 курс/УП/Для игры/шаблон.png",
         "C:/Users/userOK/OneDrive/Документы/Колледж/2 курс/УП/Для игры/улей.png",
@@ -115,50 +104,43 @@ def pattern():
 
     current_image_index = 0
 
-    # Canvas для отображения изображений
     canvas = Canvas(pattern_window, width=1000, height=500)
     canvas.pack(fill="both", expand=True)
 
-    # Отображение начального изображения
     canvas.create_image(0, 0, image=images[current_image_index], anchor="nw")
 
-    # Метка для отображения номера слайда
     slide_label = Label(pattern_window, text=f"Слайд {current_image_index + 1} из {len(images)}", font=("BOWLER", 12), background='black', foreground='white')
     slide_label.pack()
 
-    # Поле ввода для номера слайда
     slide_entry = Entry(pattern_window, font=("BOWLER", 12), width=5)
-    slide_entry.pack(pady=10)  # Размещаем поле ввода под меткой
+    slide_entry.pack(pady=10) 
 
-    # Функция для обновления фона и метки
     def update_background(step):
         nonlocal current_image_index
-        current_image_index = (current_image_index + step) % len(images)  # Циклический переход
-        canvas.delete("all")  # Очистка canvas
+        current_image_index = (current_image_index + step) % len(images)  
+        canvas.delete("all") 
         canvas.create_image(0, 0, image=images[current_image_index], anchor="nw")
 
-        # Повторно добавляем кнопки
         canvas.create_window(50, 460, anchor="nw", window=back_button)
         canvas.create_window(855, 460, anchor="nw", window=next_button)
         canvas.create_window(450, 460, anchor="nw", window=close_button)
         canvas.create_window(450, 420, anchor="nw", window=go_button)
         canvas.create_window(830, 10, anchor="nw", window=slide_label)
         canvas.create_window(420, 420, anchor="nw", window=slide_entry)
-    # Функция для перехода к слайду по номеру
+
     def go_to_slide():
         nonlocal current_image_index
         try:
-            slide_number = int(slide_entry.get())  # Получаем значение из поля ввода
+            slide_number = int(slide_entry.get()) 
             if 1 <= slide_number <= len(images):
                 current_image_index = slide_number - 1
-                update_background(0)  # Обновляем изображение без изменения индекса
-                slide_entry.delete(0, END)  # Очищаем поле ввода после использования
+                update_background(0) 
+                slide_entry.delete(0, END)  
             else:
                 print("Неверный номер слайда!")
         except ValueError:
             print("Введите корректное число!")
 
-    # Создание кнопок
     back_button = create_button(pattern_window, "  Назад", lambda: update_background(-1), font=("BOWLER", 12))
     next_button = create_button(pattern_window, "  Далее", lambda: update_background(1), font=("BOWLER", 12))
     close_button = create_button(pattern_window, "  Выход", pattern_window.destroy, font=("BOWLER", 12))
@@ -171,7 +153,6 @@ def pattern():
     canvas.create_window(830, 10, anchor="nw", window=slide_label)
     canvas.create_window(420, 420, anchor="nw", window=slide_entry)
 
-# Окно с обучением
 def open_tutorial():
     tutorial_window = Toplevel(window)
     tutorial_window.resizable(False, False)
@@ -210,23 +191,20 @@ class GameOfLife:
         self.height = height
         self.cell_size = cell_size
 
-        # Цвета для клеток
-        self.dead_color = "black"  # Цвет мёртвой клетки
-        self.max_age = 10  # Максимальный возраст клетки
+        self.dead_color = "black" 
+        self.max_age = 10 
 
-        # Инициализация сетки: каждая клетка теперь хранит кортеж (состояние, возраст)
         self.grid = [[(0, 0) for _ in range(width)] for _ in range(height)]
 
         self.canvas = Canvas(root, width=width * cell_size, height=height * cell_size)
         self.canvas.pack()
 
-        # Скорость обновления (в миллисекундах)
-        self.speed = 100  # Начальная скорость (100 мс)
+        self.speed = 100 
 
         self.running = False
         self.draw_grid()
-        self.create_buttons()  # Создаем кнопки после создания холста
-        self.canvas.bind("<Button-1>", self.toggle_cell)  # Обработчик клика мыши
+        self.create_buttons() 
+        self.canvas.bind("<Button-1>", self.toggle_cell)  
 
     def draw_grid(self):
         self.canvas.delete("all")
@@ -248,44 +226,38 @@ class GameOfLife:
                     )
 
     def age_to_color(self, age):
-        max_brightness = 255  # Максимальная яркость для зелёного канала
+        max_brightness = 255  
         brightness = max_brightness - int((age / self.max_age) * max_brightness)
-        return f"#{brightness:02x}{brightness:02x}00"  # Зелёный канал уменьшается, остальные нули
+        return f"#{brightness:02x}{brightness:02x}00" 
 
     def create_buttons(self):
-        # Кнопка "Старт"
         self.start_button = create_button(self.root, "Старт", command=self.start, font=("BOWLER", 14))
         self.start_button.place(x=50, y=50)
 
-        # Кнопка "Стоп"
         self.stop_button = create_button(self.root, "Стоп", command=self.stop, font=("BOWLER", 14))
         self.stop_button.place(x=150, y=50)
 
-        # Кнопка "Сброс"
         self.reset_button = create_button(self.root, "Сброс", command=self.reset, font=("BOWLER", 14))
         self.reset_button.place(x=250, y=50)
 
-        # Кнопка "Рандом"
         self.randomize_button = create_button(self.root, "Рандом", command=self.randomize, font=("BOWLER", 14))
         self.randomize_button.place(x=350, y=50)
 
-        # Слайдер для регулирования скорости
         self.speed_label = Label(self.root, text=f"Скорость: {self.speed} мс", font=("BOWLER", 12), bg="black",
                                  fg="white")
         self.speed_label.place(x=50, y=100)
 
         self.speed_slider = Scale(
             self.root,
-            from_=1000, to=10,  # Минимальная и максимальная скорость
+            from_=1000, to=10, 
             orient=HORIZONTAL,
             length=300,
             command=self.update_speed
         )
-        self.speed_slider.set(self.speed)  # Устанавливаем начальное значение
+        self.speed_slider.set(self.speed) 
         self.speed_slider.place(x=50, y=130)
 
     def update_speed(self, value):
-        # Обновляем скорость и текст на метке
         self.speed = int(value)
         self.speed_label.config(text=f"Скорость: {self.speed} мс")
 
@@ -328,7 +300,7 @@ class GameOfLife:
 
         self.grid = new_grid
         self.draw_grid()
-        self.root.after(self.speed, self.run_generation)  # Используем текущую скорость
+        self.root.after(self.speed, self.run_generation) 
 
     def count_neighbors(self, x, y):
         neighbors = 0
@@ -349,7 +321,6 @@ class GameOfLife:
             self.grid[y][x] = (1 - state, 1 if state == 0 else 0)
             self.draw_grid()
 
-# Меню
 menu_frame = Frame(window)
 menu_frame.pack(fill="both", expand=True)
 
@@ -369,7 +340,6 @@ canvas.create_window(658, 470, anchor="nw", window=button_exit)
 canvas.create_window(650, 400, anchor="nw", window=button_pattern)
 canvas.create_window(1485, 2, anchor="nw", window=button_info)
 
-# Игровое поле
 game_frame = Frame(window)
 
 bg_start = PhotoImage(file=BG_START_PATH)
@@ -380,8 +350,6 @@ game_canvas.create_image(0, 0, image=bg_start, anchor="nw")
 button_menu = create_button(game_frame, "Меню", show_menu)
 game_canvas.create_window(12, 2, anchor="nw", window=button_menu)
 
-# Создаем игру
 game = GameOfLife(game_canvas)
 
-# Запуск основного цикла
 window.mainloop()
