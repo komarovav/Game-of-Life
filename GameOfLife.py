@@ -93,7 +93,7 @@ def pattern():
         "Images/змея.png",
         "Images/знак интеграла.png",
         "Images/каноэ.png",
-        "Images/длинная баржа.png",
+        "Images/рыболовный крючок.png",
         "Images/авианосец.png",
         "Images/манго.png",
     ]
@@ -481,9 +481,9 @@ class GameOfLife:
             "Images/змея.png",
             "Images/знак интеграла.png",
             "Images/каноэ.png",
-            "Images/длинная баржа.png",
             "Images/авианосец.png",
             "Images/манго.png",
+            "Images/рыболовный крючок.png",
     ]
 
         self.images = []
@@ -662,6 +662,12 @@ class GameOfLife:
         if born <= alone:
             self.born_slider.set(alone + 1)
 
+        if born > over:
+            self.death_over_slider.set(born)
+
+        if born <= alone:
+            self.death_alone_slider.set(born-1)
+
     def update_gradient_availability(self):
         if self.aging_enabled.get():
             self.gradient_checkbox.config(state="disabled")
@@ -689,7 +695,7 @@ class GameOfLife:
                         if self.aging_enabled.get() and self.age_grid[y][x] >= self.death_aging_slider.get():
                             new_grid[y][x] = 0
                             self.age_grid[y][x] = 0
-                else:  # Мёртвая клетка
+                else:
                     if neighbors == self.birth_threshold.get():
                         new_grid[y][x] = 1
                         self.age_grid[y][x] = 0
