@@ -97,7 +97,7 @@ class GameOfLife:
         self.width = width
         self.height = height
         self.cell_size = cell_size
-        self.grid = [[0 for _ in range(width)] for _ in range(height)]  # Начинаем с пустой сетки
+        self.grid = [[0 for _ in range(width)] for _ in range(height)] 
 
         self.canvas = Canvas(root, width=width * cell_size, height=height * cell_size)
         self.canvas.pack()
@@ -145,7 +145,7 @@ class GameOfLife:
         self.running = False
 
     def reset(self):
-        self.grid = [[0 for _ in range(self.width)] for _ in range(self.height)]  # Очистка сетки
+        self.grid = [[0 for _ in range(self.width)] for _ in range(self.height)]  
         self.draw_grid()
 
     def randomize(self):
