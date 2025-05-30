@@ -313,6 +313,7 @@ class GameOfLife:
             bg="black",
             fg="white",
             length=250,
+            variable=self.loneliness_threshold,
             command=self.validate_rules
         )
         self.death_alone_slider.set(2)
@@ -331,6 +332,7 @@ class GameOfLife:
             bg="black",
             fg="white",
             length=250,
+            variable=self.overpopulation_threshold,
             command=self.validate_rules
         )
         self.death_over_slider.set(3)
@@ -610,13 +612,16 @@ class GameOfLife:
         return sum(cell for row in self.grid for cell in row)
 
     def start(self):
-        self.running = True
-        self.run_generation()
+        if not self.running:
+            self.running = True
+            self.run_generation()
 
     def stop(self):
-        self.running = False
+        if self.running:
+            self.running = False
 
     def reset(self):
+        self.running = False
         self.grid = [[0 for _ in range(self.width)] for _ in range(self.height)]
         self.total_born = 0
         self.total_died = 0
@@ -629,7 +634,7 @@ class GameOfLife:
         self.generation_label.config(text="0")
         self.speed = 100
         self.speed_slider.set(self.speed)
-        self.running = False
+
 
     def randomize(self):
         self.grid = [[random.choice([0, 1]) for _ in range(self.width)] for _ in range(self.height)]
@@ -684,7 +689,7 @@ class GameOfLife:
             for x in range(self.width):
                 neighbors = self.count_neighbors(x, y)
 
-                if self.grid[y][x]:  # Живая клетка
+                if self.grid[y][x]:
                     if (neighbors < self.loneliness_threshold.get() or
                             neighbors > self.overpopulation_threshold.get()):
                         new_grid[y][x] = 0
