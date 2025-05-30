@@ -436,13 +436,15 @@ class GameOfLife:
         return sum(cell for row in self.grid for cell in row)
 
     def start(self):
-        self.running = True
-        self.run_generation()
+        if not self.running:
+            self.running = True
+            self.run_generation()
 
     def stop(self):
         self.running = False
 
     def reset(self):
+        self.running = False
         self.grid = [[0 for _ in range(self.width)] for _ in range(self.height)]
         self.total_born = 0
         self.total_died = 0
@@ -453,7 +455,8 @@ class GameOfLife:
         self.dead_label.config(text="0")
         self.born_label.config(text="0")
         self.generation_label.config(text="0")
-        self.running = False
+        self.speed = 100
+        self.speed_slider.set(self.speed)
 
     def randomize(self):
         self.grid = [[random.choice([0, 1]) for _ in range(self.width)] for _ in range(self.height)]
